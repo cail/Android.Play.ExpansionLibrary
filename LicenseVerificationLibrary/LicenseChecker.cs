@@ -16,8 +16,6 @@ namespace LicenseVerificationLibrary
     using LicenseVerificationLibrary.DeviceLimiter;
     using LicenseVerificationLibrary.Policy;
 
-    using Debug = System.Diagnostics.Debug;
-
     /// <summary>
     /// <para>
     /// Client library for Android Market license verifications.
@@ -173,7 +171,7 @@ namespace LicenseVerificationLibrary
                 // If we have a valid recent LICENSED response, we can skip asking Market/Play.
                 if (this.policy.AllowAccess())
                 {
-                    System.Diagnostics.Debug.WriteLine("Using cached license response");
+                    LVLDebug.WriteLine("Using cached license response");
                     callback.Allow(PolicyServerResponse.Licensed);
                 }
                 else
@@ -198,7 +196,7 @@ namespace LicenseVerificationLibrary
                             }
                             else
                             {
-                                Debug.WriteLine("Could not bind to service.");
+                                LVLDebug.WriteLine("Could not bind to service.");
                                 this.HandleServiceConnectionError(validator);
                             }
                         }
@@ -208,7 +206,7 @@ namespace LicenseVerificationLibrary
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex.StackTrace);
+                            LVLDebug.WriteLine(ex.StackTrace);
                         }
                     }
                     else
@@ -267,7 +265,7 @@ namespace LicenseVerificationLibrary
                 // Called when the connection with the service has been
                 // unexpectedly disconnected. That is, Market crashed.
                 // If there are any checks in progress, the timeouts will handle them.
-                Debug.WriteLine("Service unexpectedly disconnected.");
+                LVLDebug.WriteLine("Service unexpectedly disconnected.");
                 this.licensingService = null;
             }
         }
@@ -315,12 +313,12 @@ namespace LicenseVerificationLibrary
             }
             catch (FormatException)
             {
-                Debug.WriteLine("Could not decode public key from Base64.");
+                LVLDebug.WriteLine("Could not decode public key from Base64.");
                 throw;
             }
             catch (InvalidKeySpecException exx)
             {
-                Debug.WriteLine("Invalid public key specification.");
+                LVLDebug.WriteLine("Invalid public key specification.");
                 throw new ArgumentException(exx.Message);
             }
         }
@@ -345,7 +343,7 @@ namespace LicenseVerificationLibrary
             }
             catch (PackageManager.NameNotFoundException)
             {
-                Debug.WriteLine("Package not found. Could not get version code.");
+                LVLDebug.WriteLine("Package not found. Could not get version code.");
                 return string.Empty;
             }
         }
@@ -364,7 +362,7 @@ namespace LicenseVerificationLibrary
                 catch
                 {
                     // Somehow we've already been unbound. This is a non-fatal error.
-                    Debug.WriteLine("Unable to unbind from licensing service (already unbound).");
+                    LVLDebug.WriteLine("Unable to unbind from licensing service (already unbound).");
                 }
 
                 this.licensingService = null;
@@ -422,14 +420,14 @@ namespace LicenseVerificationLibrary
                 LicenseValidator validator = this.pendingChecks.Dequeue();
                 try
                 {
-                    Debug.WriteLine("Calling CheckLicense on service for " + validator.GetPackageName());
+                    LVLDebug.WriteLine("Calling CheckLicense on service for " + validator.GetPackageName());
                     this.licensingService.CheckLicense(
                         validator.GetNumberUsedOnce(), validator.GetPackageName(), new ResultListener(validator, this));
                     this.checksInProgress.Add(validator);
                 }
                 catch (RemoteException e)
                 {
-                    Debug.WriteLine("RemoteException in CheckLicense call. " + e.Message);
+                    LVLDebug.WriteLine("RemoteException in CheckLicense call. " + e.Message);
                     this.HandleServiceConnectionError(validator);
                 }
             }
@@ -478,7 +476,7 @@ namespace LicenseVerificationLibrary
                 this.licenseValidator = validator;
                 this.onTimeout = delegate
                     {
-                        Debug.WriteLine("License check timed out.");
+                        LVLDebug.WriteLine("License check timed out.");
 
                         this.checker.HandleServiceConnectionError(this.licenseValidator);
                         this.checker.FinishCheck(this.licenseValidator);
@@ -508,7 +506,7 @@ namespace LicenseVerificationLibrary
                 this.checker.handler.Post(
                     delegate
                         {
-                            Debug.WriteLine("Received license response. " + responseCode);
+                            LVLDebug.WriteLine("Received license response. " + responseCode);
 
                             // Make sure it hasn't already timed out.
                             if (this.checker.checksInProgress.Contains(this.licenseValidator))
@@ -533,7 +531,7 @@ namespace LicenseVerificationLibrary
             /// </summary>
             private void ClearTimeout()
             {
-                Debug.WriteLine("Clearing license checker timeout.");
+                LVLDebug.WriteLine("Clearing license checker timeout.");
                 this.checker.handler.RemoveCallbacks(this.onTimeout);
             }
 
@@ -571,9 +569,9 @@ namespace LicenseVerificationLibrary
                 {
                     string androidId = Settings.Secure.GetString(
                         this.checker.context.ContentResolver, Settings.Secure.AndroidId);
-                    Debug.WriteLine("License Server Failure: " + stringError);
-                    Debug.WriteLine("Android ID: " + androidId);
-                    Debug.WriteLine("Time: " + DateTime.Now);
+                    LVLDebug.WriteLine("License Server Failure: " + stringError);
+                    LVLDebug.WriteLine("Android ID: " + androidId);
+                    LVLDebug.WriteLine("Time: " + DateTime.Now);
                 }
             }
 
@@ -582,7 +580,7 @@ namespace LicenseVerificationLibrary
             /// </summary>
             private void StartTimeout()
             {
-                Debug.WriteLine("Start monitoring license checker timeout.");
+                LVLDebug.WriteLine("Start monitoring license checker timeout.");
                 this.checker.handler.PostDelayed(this.onTimeout, TimeoutMs);
             }
 

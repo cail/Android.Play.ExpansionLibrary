@@ -29,7 +29,7 @@ namespace LicenseVerificationLibrary
         /// </summary>
         protected LicenseResultListenerStub()
         {
-            System.Diagnostics.Debug.WriteLine(Descriptor);
+            LVLDebug.WriteLine(Descriptor);
             this.AttachInterface(this, Descriptor);
         }
 

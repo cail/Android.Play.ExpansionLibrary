@@ -307,7 +307,7 @@ namespace LicenseVerificationLibrary.Policy
                     Dictionary<string, string> extras;
                     if (!PolicyExtensions.TryDecodeExtras(rawData.Extra, out extras))
                     {
-                        Debug.WriteLine("Invalid syntax error while decoding extras data from server.");
+                        LVLDebug.WriteLine("Invalid syntax error while decoding extras data from server.");
                     }
                     else
                     {
@@ -347,7 +347,7 @@ namespace LicenseVerificationLibrary.Policy
             if (!long.TryParse(retries, out r))
             {
                 // No response or not parsable, expire immediately
-                System.Diagnostics.Debug.WriteLine("Licence retry count (GR) missing, grace period disabled");
+                LVLDebug.WriteLine("Licence retry count (GR) missing, grace period disabled");
             }
 
             this.MaxRetries = r;
@@ -367,7 +367,7 @@ namespace LicenseVerificationLibrary.Policy
             if (!long.TryParse(retry, out r))
             {
                 // No response or not parsable, expire immediately
-                System.Diagnostics.Debug.WriteLine("License retry timestamp (GT) missing, grace period disabled");
+                LVLDebug.WriteLine("License retry timestamp (GT) missing, grace period disabled");
             }
 
             this.RetryUntil = r;
@@ -387,7 +387,7 @@ namespace LicenseVerificationLibrary.Policy
             if (!long.TryParse(timestamp, out t))
             {
                 // No response or not parsable, expire in one minute.
-                System.Diagnostics.Debug.WriteLine("License validity timestamp (VT) missing, caching for a minute");
+                LVLDebug.WriteLine("License validity timestamp (VT) missing, caching for a minute");
                 t = PolicyExtensions.GetCurrentMilliseconds() + PolicyExtensions.MillisPerMinute;
             }
 

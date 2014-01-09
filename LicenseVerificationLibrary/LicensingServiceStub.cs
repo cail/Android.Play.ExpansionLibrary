@@ -31,7 +31,7 @@ namespace LicenseVerificationLibrary
         /// </summary>
         private LicensingServiceStub()
         {
-            System.Diagnostics.Debug.WriteLine(Descriptor);
+            LVLDebug.WriteLine(Descriptor);
             this.AttachInterface(this, Descriptor);
         }
 

@@ -160,7 +160,7 @@ namespace LicenseVerificationLibrary
 
                     if (!sig.Verify(Convert.FromBase64String(signature)))
                     {
-                        System.Diagnostics.Debug.WriteLine("Signature verification failed.");
+                        LVLDebug.WriteLine("Signature verification failed.");
                         this.HandleInvalidResponse();
                         return;
                     }
@@ -181,7 +181,7 @@ namespace LicenseVerificationLibrary
                 }
                 catch (FormatException)
                 {
-                    System.Diagnostics.Debug.WriteLine("Could not Base64-decode signature.");
+                    LVLDebug.WriteLine("Could not Base64-decode signature.");
                     this.HandleInvalidResponse();
                     return;
                 }
@@ -193,35 +193,35 @@ namespace LicenseVerificationLibrary
                 }
                 catch (IllegalArgumentException)
                 {
-                    System.Diagnostics.Debug.WriteLine("Could not parse response.");
+                    LVLDebug.WriteLine("Could not parse response.");
                     this.HandleInvalidResponse();
                     return;
                 }
 
                 if (data.ResponseCode != responseCode)
                 {
-                    System.Diagnostics.Debug.WriteLine("Response codes don't match.");
+                    LVLDebug.WriteLine("Response codes don't match.");
                     this.HandleInvalidResponse();
                     return;
                 }
 
                 if (data.NumberUsedOnce != this.numberUsedOnce)
                 {
-                    System.Diagnostics.Debug.WriteLine("NumberUsedOnce doesn't match.");
+                    LVLDebug.WriteLine("NumberUsedOnce doesn't match.");
                     this.HandleInvalidResponse();
                     return;
                 }
 
                 if (data.PackageName != this.packageName)
                 {
-                    System.Diagnostics.Debug.WriteLine("Package name doesn't match.");
+                    LVLDebug.WriteLine("Package name doesn't match.");
                     this.HandleInvalidResponse();
                     return;
                 }
 
                 if (data.VersionCode != this.versionCode)
                 {
-                    System.Diagnostics.Debug.WriteLine("Version codes don't match.");
+                    LVLDebug.WriteLine("Version codes don't match.");
                     this.HandleInvalidResponse();
                     return;
                 }
@@ -230,7 +230,7 @@ namespace LicenseVerificationLibrary
                 userId = data.UserId;
                 if (string.IsNullOrEmpty(userId))
                 {
-                    System.Diagnostics.Debug.WriteLine("User identifier is empty.");
+                    LVLDebug.WriteLine("User identifier is empty.");
                     this.HandleInvalidResponse();
                     return;
                 }
@@ -247,15 +247,15 @@ namespace LicenseVerificationLibrary
                     this.HandleResponse(PolicyServerResponse.NotLicensed, data);
                     break;
                 case ServerResponseCode.ErrorContactingServer:
-                    System.Diagnostics.Debug.WriteLine("Error contacting licensing server.");
+                    LVLDebug.WriteLine("Error contacting licensing server.");
                     this.HandleResponse(PolicyServerResponse.Retry, data);
                     break;
                 case ServerResponseCode.ServerFailure:
-                    System.Diagnostics.Debug.WriteLine("An error has occurred on the licensing server.");
+                    LVLDebug.WriteLine("An error has occurred on the licensing server.");
                     this.HandleResponse(PolicyServerResponse.Retry, data);
                     break;
                 case ServerResponseCode.OverQuota:
-                    System.Diagnostics.Debug.WriteLine(
+                    LVLDebug.WriteLine(
                         "Licensing server is refusing to talk to this device, over quota.");
                     this.HandleResponse(PolicyServerResponse.Retry, data);
                     break;
@@ -269,7 +269,7 @@ namespace LicenseVerificationLibrary
                     this.HandleApplicationError(CallbackErrorCode.NotMarketManaged);
                     break;
                 default:
-                    System.Diagnostics.Debug.WriteLine("Unknown response code for license check.");
+                    LVLDebug.WriteLine("Unknown response code for license check.");
                     this.HandleInvalidResponse();
                     break;
             }
