@@ -139,7 +139,7 @@ namespace LicenseVerificationLibrary.Policy
             this.preferences = new PreferenceObfuscator(sp, obfuscator);
             string lastResponse = this.preferences.GetString(
                 PrefLastResponse, ((int)PolicyServerResponse.Retry).ToString());
-            this.LastResponse = (PolicyServerResponse)Enum.Parse(typeof(PolicyServerResponse), lastResponse);
+            this.lastResponse = (PolicyServerResponse)Enum.Parse(typeof(PolicyServerResponse), lastResponse);
             this.ValidityTimestamp =
                 long.Parse(this.preferences.GetString(PrefValidityTimestamp, DefaultValidityTimestamp));
             this.RetryUntil = long.Parse(this.preferences.GetString(PrefRetryUntil, DefaultRetryUntil));
@@ -311,7 +311,7 @@ namespace LicenseVerificationLibrary.Policy
                     }
                     else
                     {
-                        this.SetValidityTimestamp(extras.ContainsKey("VT") ? extras["VT"] : DefaultValidityTimestamp);
+                        this.SetValidityTimestamp(extras.ContainsKey("VT") ? extras["VT"] : null);
                         this.SetRetryUntil(extras.ContainsKey("GT") ? extras["GT"] : DefaultRetryUntil);
                         this.SetMaxRetries(extras.ContainsKey("GR") ? extras["GR"] : DefaultMaxRetries);
                     }
@@ -384,7 +384,7 @@ namespace LicenseVerificationLibrary.Policy
         private void SetValidityTimestamp(string timestamp)
         {
             long t;
-            if (!long.TryParse(timestamp, out t))
+            if (timestamp == null || !long.TryParse(timestamp, out t))
             {
                 // No response or not parsable, expire in one minute.
                 LVLDebug.WriteLine("License validity timestamp (VT) missing, caching for a minute");
