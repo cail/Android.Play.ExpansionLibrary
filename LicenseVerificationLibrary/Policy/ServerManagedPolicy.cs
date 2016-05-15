@@ -54,6 +54,13 @@ namespace LicenseVerificationLibrary.Policy
         private const string DefaultValidityTimestamp = "0";
 
         /// <summary>
+        /// Google gives very small validation interval. Algorithm is unknown, but
+        /// sometimes this is very ugly.
+        /// This multiplicator could be used to increase the cached time period.
+        /// </summary>
+        public int ValidityPeriodMultiplicator = 1;
+
+        /// <summary>
         /// The pref last response.
         /// </summary>
         private const string PrefLastResponse = "lastResponse";
@@ -233,7 +240,7 @@ namespace LicenseVerificationLibrary.Policy
                 return this.validityTimestamp;
             }
 
-            private set
+            set
             {
                 this.validityTimestamp = value;
                 this.preferences.PutString(PrefValidityTimestamp, this.validityTimestamp.ToString());
@@ -390,6 +397,7 @@ namespace LicenseVerificationLibrary.Policy
                 LVLDebug.WriteLine("License validity timestamp (VT) missing, caching for a minute");
                 t = PolicyExtensions.GetCurrentMilliseconds() + PolicyExtensions.MillisPerMinute;
             }
+            t = PolicyExtensions.GetCurrentMilliseconds() + ValidityPeriodMultiplicator * (t - PolicyExtensions.GetCurrentMilliseconds());
 
             this.ValidityTimestamp = t;
         }

@@ -160,7 +160,7 @@ namespace LicenseVerificationLibrary
 
                     if (!sig.Verify(Convert.FromBase64String(signature)))
                     {
-                        LVLDebug.WriteLine("Signature verification failed.");
+                        LVLDebug.WriteLine("Signature verification failed: "+ signedData + " " + signature);
                         this.HandleInvalidResponse();
                         return;
                     }
