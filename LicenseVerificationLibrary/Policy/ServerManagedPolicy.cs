@@ -240,7 +240,7 @@ namespace LicenseVerificationLibrary.Policy
                 return this.validityTimestamp;
             }
 
-            set
+            private set
             {
                 this.validityTimestamp = value;
                 this.preferences.PutString(PrefValidityTimestamp, this.validityTimestamp.ToString());
