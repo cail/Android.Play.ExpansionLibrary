@@ -193,8 +193,7 @@ namespace LicenseVerificationLibrary
                     {
                         try
                         {
-                            var i = new Intent(LicensingServiceIntentString);
-
+                            var i = new Intent(LicensingServiceIntentString).SetPackage("com.android.vending");
                             if (this.context.BindService(i, this, Bind.AutoCreate))
                             {
                                 this.pendingChecks.Enqueue(validator);
