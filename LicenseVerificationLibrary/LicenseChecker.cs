@@ -77,6 +77,11 @@ namespace LicenseVerificationLibrary
         private readonly Handler handler;
 
         /// <summary>
+        /// Looper of current background HandlerThread. Starting from android 7.0 it may be owned by other thread
+        /// </summary>
+        private readonly Looper currentLooper;
+
+        /// <summary>
         /// The _locker.
         /// </summary>
         private readonly object locker;
@@ -151,7 +156,8 @@ namespace LicenseVerificationLibrary
             this.versionCode = GetVersionCode(context, this.packageName);
             var handlerThread = new HandlerThread("background thread");
             handlerThread.Start();
-            this.handler = new Handler(handlerThread.Looper);
+            currentLooper = handlerThread.Looper;
+            this.handler = new Handler(currentLooper);
         }
 
         #endregion
@@ -234,7 +240,7 @@ namespace LicenseVerificationLibrary
             lock (this.locker)
             {
                 this.CleanupService();
-                this.handler.Looper.Quit();
+                currentLooper.QuitSafely();
             }
         }
 
@@ -587,7 +593,6 @@ namespace LicenseVerificationLibrary
                 LVLDebug.WriteLine("Start monitoring license checker timeout.");
                 this.checker.handler.PostDelayed(this.onTimeout, TimeoutMs);
             }
-
             #endregion
         }
     }
