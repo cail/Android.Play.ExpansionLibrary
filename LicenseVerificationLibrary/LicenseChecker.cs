@@ -240,7 +240,7 @@ namespace LicenseVerificationLibrary
             lock (this.locker)
             {
                 this.CleanupService();
-                currentLooper.QuitSafely();
+                currentLooper.Quit();
             }
         }
 
