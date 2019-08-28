@@ -235,12 +235,15 @@ namespace LicenseVerificationLibrary
         ///  circumstances, such as during screen rotation if an Activity requests the
         ///  license check or when the user exits the application.
         /// </summary>
-        public void OnDestroy()
+        public void OnDestroy(bool isSafely)
         {
             lock (this.locker)
             {
                 this.CleanupService();
-                currentLooper.Quit();
+                if (isSafely)
+                    currentLooper.QuitSafely();
+                else
+                    currentLooper.Quit();
             }
         }
 
