@@ -235,7 +235,7 @@ namespace LicenseVerificationLibrary
         ///  circumstances, such as during screen rotation if an Activity requests the
         ///  license check or when the user exits the application.
         /// </summary>
-        public void OnDestroy(bool isSafely)
+        public void OnDestroy(bool isSafely = false)
         {
             lock (this.locker)
             {
